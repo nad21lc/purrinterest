@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:purrinterest/utils/http_helper.dart';
 
+import 'package:purrinterest/ui/cats_list_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -89,6 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Go to list screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CatListScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),
