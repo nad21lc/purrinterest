@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:purrinterest/utils/http_helper.dart';
 
 import 'package:purrinterest/ui/cats_list_screen.dart';
+import 'package:purrinterest/ui/favorite_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -91,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Go to list screen
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => const CatListScreen()),
                     );
@@ -118,6 +119,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Go to favorite list
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FavoriteListScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),

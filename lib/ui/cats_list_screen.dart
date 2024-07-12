@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:purrinterest/ui/home_screen.dart';
 import 'package:purrinterest/utils/db_helper.dart';
 import 'package:purrinterest/utils/http_helper.dart';
 import 'package:purrinterest/models/cat.dart';
@@ -45,7 +46,18 @@ class _CatListScreenState extends State<CatListScreen> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ),
+            );
+          },
+        ),
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -64,7 +76,7 @@ class _CatListScreenState extends State<CatListScreen> {
           BottomNavigationBarItem(
             icon: Icon(
                 Icons.pets,
-                color: Color(0xFFBB9AB1),
+                color: Color(0xFF987D9A),
             ),
             label: 'Show Cats',
           ),
@@ -78,7 +90,7 @@ class _CatListScreenState extends State<CatListScreen> {
         ],
         onTap: (int index) {
           if (index == 1) {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => FavoriteListScreen(),
