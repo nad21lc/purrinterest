@@ -3,7 +3,6 @@ import 'package:purrinterest/ui/home_screen.dart';
 import 'package:purrinterest/utils/db_helper.dart';
 import 'package:purrinterest/utils/http_helper.dart';
 import 'package:purrinterest/models/cat.dart';
-
 import 'package:purrinterest/ui/favorite_list_screen.dart';
 
 class CatListScreen extends StatefulWidget {
@@ -15,13 +14,16 @@ class CatListScreen extends StatefulWidget {
 
 class _CatListScreenState extends State<CatListScreen> {
   List<Cat> cats = [];
+  List<Cat> filteredCats = [];
   late HttpHelper helper;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     helper = HttpHelper(); // Initialize HttpHelper
     _fetchCats(); // Fetch cats from server
+    searchController.addListener(_filterCats);
   }
 
   Future<void> _fetchCats() async {
@@ -29,10 +31,19 @@ class _CatListScreenState extends State<CatListScreen> {
       final List<Cat> fetchedCats = await helper.getCats(); // Get cats from the helper
       setState(() {
         cats = fetchedCats; // Update cat list
+        filteredCats = fetchedCats; // Initialize filtered cat list
       });
     } catch (e) {
       print('Error fetching cats: $e');
     }
+  }
+
+  void _filterCats() {
+    setState(() {
+      filteredCats = cats.where((cat) {
+        return cat.name!.toLowerCase().contains(searchController.text.toLowerCase());
+      }).toList();
+    });
   }
 
   @override
@@ -58,6 +69,24 @@ class _CatListScreenState extends State<CatListScreen> {
             );
           },
         ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56.0),
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Search by breed',
+                fillColor: Colors.white,
+                filled: true,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -66,24 +95,24 @@ class _CatListScreenState extends State<CatListScreen> {
           crossAxisSpacing: 8.0,
           childAspectRatio: 0.75,
         ),
-        itemCount: cats.length,
+        itemCount: filteredCats.length,
         itemBuilder: (BuildContext context, int index) {
-          return CatGridItem(cat: cats[index]);
+          return CatGridItem(cat: filteredCats[index]);
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
             icon: Icon(
-                Icons.pets,
-                color: Color(0xFF987D9A),
+              Icons.pets,
+              color: Color(0xFF987D9A),
             ),
             label: 'Show Cats',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-                Icons.favorite,
-                color: Color(0xFFBB9AB1),
+              Icons.favorite,
+              color: Color(0xFFBB9AB1),
             ),
             label: 'Favorites',
           ),
@@ -162,8 +191,8 @@ class _CatGridItemState extends State<CatGridItem> {
                 Text(
                   'Origin: ${widget.cat.origin ?? 'Unknown'}',
                   style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF987070),
+                    fontSize: 12,
+                    color: Color(0xFF987070),
                   ),
                 ),
               ],
